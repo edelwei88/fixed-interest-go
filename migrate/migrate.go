@@ -1,15 +1,15 @@
 package main
 
 import (
-	"github.com/edelwei88/fixed-interest-go/initial"
+	"github.com/edelwei88/fixed-interest-go/initialize"
 	"github.com/edelwei88/fixed-interest-go/models"
 )
 
 func init() {
-	initial.LoadEnv()
-	initial.ConnectToDB()
+	initialize.LoadEnv()
+	initialize.ConnectToDB()
 }
 
 func main() {
-	initial.DB.AutoMigrate(&models.Role{})
+	initialize.DB.AutoMigrate(&models.Role{}, &models.LoanType{}, &models.User{}, &models.Docs{}, &models.Loan{}, &models.LoanPayment{})
 }

@@ -1,24 +1,37 @@
 package main
 
 import (
-	initial "github.com/edelwei88/fixed-interest-go/initial"
+	"net/http"
+	"os"
+
+	"github.com/edelwei88/fixed-interest-go/controllers"
+	"github.com/edelwei88/fixed-interest-go/initialize"
 	"github.com/gin-gonic/gin"
 )
 
-func initialize() {
-	initial.LoadEnv()
-	initial.ConnectToDB()
+func setup() {
+	initialize.LoadEnv()
+	initialize.ConnectToDB()
 }
 
 func main() {
-	initialize()
-	r := gin.Default()
+	setup()
+	router := gin.Default()
+	router.Use(gin.Logger())
+	router.Use(gin.Recovery())
 
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
+	router.GET("/roles", controllers.RolesGET)
+	router.GET("/roles/:id", controllers.RoleGET)
+	router.POST("/roles", controllers.RolePOST)
+
+	admin := router.Group("/admin", gin.BasicAuth(gin.Accounts{
+		os.Getenv("ADMIN_USERNAME"): os.Getenv("ADMIN_PASSWORD"),
+	}))
+	admin.GET("/test", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"rofl": "rofl",
 		})
 	})
 
-	r.Run()
+	router.Run()
 }

@@ -2,5 +2,5 @@ package models
 
 type Role struct {
 	ID   uint
-	Role string
+	Role string `gorm:"not null"`
 }
