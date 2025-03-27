@@ -11,28 +11,28 @@ import (
 	"gorm.io/gorm"
 )
 
-func RolesGET(c *gin.Context) {
-	var roles []models.Role
-	result := initialize.DB.Find(&roles)
+func DocsGET(c *gin.Context) {
+	var docs []models.Docs
+	result := initialize.DB.Find(&docs)
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
 
 	c.JSON(200, gin.H{
-		"Roles": roles,
+		"Docs": docs,
 	})
 }
 
-func RoleGET(c *gin.Context) {
+func DocGET(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	var role models.Role
-	result := initialize.DB.First(&role, id)
+	var docs models.Docs
+	result := initialize.DB.First(&docs, id)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		c.Status(http.StatusNoContent)
 		return
@@ -43,45 +43,49 @@ func RoleGET(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"Role": role,
+		"Docs": docs,
 	})
 }
 
-func RolePOST(c *gin.Context) {
-	var body models.Role
+func DocsPOST(c *gin.Context) {
+	var body models.Docs
 	err := c.ShouldBind(&body)
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
+	if body.UserID == 0 || body.Data == "" {
+		c.Status(http.StatusBadRequest)
+		return
+	}
 
-	result := initialize.DB.Omit("ID").Create(&body)
+	result := initialize.DB.Create(&body)
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"Role": body,
+		"Docs": body,
 	})
 }
 
-func RolePATCH(c *gin.Context) {
+func DocsPATCH(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	var body models.Role
+	var body models.Docs
 	err = c.ShouldBind(&body)
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	var role models.Role
-	result := initialize.DB.First(&role, id)
+	var docs models.Docs
+	result := initialize.DB.First(&docs, id)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		c.Status(http.StatusNoContent)
 		return
@@ -91,25 +95,25 @@ func RolePATCH(c *gin.Context) {
 		return
 	}
 
-	result = initialize.DB.Model(&role).Omit("ID").Updates(&body)
+	result = initialize.DB.Model(&docs).Omit("UserID").Updates(&body)
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"Role": role,
+		"Docs": docs,
 	})
 }
 
-func RoleDELETE(c *gin.Context) {
+func DocsDELETE(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	result := initialize.DB.Delete(&models.Role{}, id)
+	result := initialize.DB.Delete(&models.Docs{}, id)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		c.Status(http.StatusNoContent)
 		return

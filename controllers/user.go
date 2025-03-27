@@ -11,28 +11,28 @@ import (
 	"gorm.io/gorm"
 )
 
-func RolesGET(c *gin.Context) {
-	var roles []models.Role
-	result := initialize.DB.Find(&roles)
+func UsersGET(c *gin.Context) {
+	var users []models.User
+	result := initialize.DB.Find(&users)
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
 
 	c.JSON(200, gin.H{
-		"Roles": roles,
+		"Users": users,
 	})
 }
 
-func RoleGET(c *gin.Context) {
+func UserGET(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	var role models.Role
-	result := initialize.DB.First(&role, id)
+	var user models.User
+	result := initialize.DB.First(&user, id)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		c.Status(http.StatusNoContent)
 		return
@@ -43,7 +43,7 @@ func RoleGET(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"Role": role,
+		"User": user,
 	})
 }
 

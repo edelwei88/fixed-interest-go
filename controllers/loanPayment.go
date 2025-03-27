@@ -11,28 +11,28 @@ import (
 	"gorm.io/gorm"
 )
 
-func RolesGET(c *gin.Context) {
-	var roles []models.Role
-	result := initialize.DB.Find(&roles)
+func LoanPaymentsGET(c *gin.Context) {
+	var lps []models.LoanPayment
+	result := initialize.DB.Find(&lps)
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
 
 	c.JSON(200, gin.H{
-		"Roles": roles,
+		"LoanPayments": lps,
 	})
 }
 
-func RoleGET(c *gin.Context) {
+func LoanPaymentGET(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	var role models.Role
-	result := initialize.DB.First(&role, id)
+	var lp models.LoanPayment
+	result := initialize.DB.First(&lp, id)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		c.Status(http.StatusNoContent)
 		return
@@ -43,12 +43,12 @@ func RoleGET(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"Role": role,
+		"LoanPayment": lp,
 	})
 }
 
-func RolePOST(c *gin.Context) {
-	var body models.Role
+func LoanPaymentPOST(c *gin.Context) {
+	var body models.LoanPayment
 	err := c.ShouldBind(&body)
 	if err != nil {
 		c.Status(http.StatusBadRequest)
@@ -62,26 +62,26 @@ func RolePOST(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"Role": body,
+		"LoanPayment": body,
 	})
 }
 
-func RolePATCH(c *gin.Context) {
+func LoanPaymentPATCH(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	var body models.Role
+	var body models.LoanPayment
 	err = c.ShouldBind(&body)
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	var role models.Role
-	result := initialize.DB.First(&role, id)
+	var lp models.LoanPayment
+	result := initialize.DB.First(&lp, id)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		c.Status(http.StatusNoContent)
 		return
@@ -91,25 +91,25 @@ func RolePATCH(c *gin.Context) {
 		return
 	}
 
-	result = initialize.DB.Model(&role).Omit("ID").Updates(&body)
+	result = initialize.DB.Model(&lp).Omit("ID", "LoanID").Updates(&body)
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"Role": role,
+		"LoanPayment": lp,
 	})
 }
 
-func RoleDELETE(c *gin.Context) {
+func LoanPaymentDELETE(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	result := initialize.DB.Delete(&models.Role{}, id)
+	result := initialize.DB.Delete(&models.LoanPayment{}, id)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		c.Status(http.StatusNoContent)
 		return
