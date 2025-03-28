@@ -11,5 +11,5 @@ func init() {
 }
 
 func main() {
-	initialize.DB.AutoMigrate(&models.Role{}, &models.LoanType{}, &models.User{}, &models.Docs{}, &models.Loan{}, &models.LoanPayment{})
+	initialize.DB.AutoMigrate(&models.Role{}, &models.LoanType{}, &models.User{}, &models.Docs{}, &models.Loan{}, &models.LoanPayment{}, &models.Token{})
 }

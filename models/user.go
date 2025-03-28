@@ -5,9 +5,10 @@ type User struct {
 	FirstName    string `gorm:"not null;size:50"`
 	LastName     string `gorm:"not null;size:50"`
 	PhoneNumber  string `gorm:"not null;size:10"`
-	Login        string `gorm:"not null;size:256"`
+	Login        string `gorm:"not null;size:256;unique"`
 	PasswordHash string `gorm:"not null;size:64"`
 	RoleID       uint   `gorm:"not null"`
 	Role         Role
 	Loans        []Loan
+	Tokens       []Token
 }

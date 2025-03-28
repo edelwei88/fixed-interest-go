@@ -47,8 +47,8 @@ func UserGET(c *gin.Context) {
 	})
 }
 
-func RolePOST(c *gin.Context) {
-	var body models.Role
+func UserPOST(c *gin.Context) {
+	var body models.User
 	err := c.ShouldBind(&body)
 	if err != nil {
 		c.Status(http.StatusBadRequest)
@@ -62,26 +62,26 @@ func RolePOST(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"Role": body,
+		"User": body,
 	})
 }
 
-func RolePATCH(c *gin.Context) {
+func UserPATCH(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	var body models.Role
+	var body models.User
 	err = c.ShouldBind(&body)
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	var role models.Role
-	result := initialize.DB.First(&role, id)
+	var user models.User
+	result := initialize.DB.First(&user, id)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		c.Status(http.StatusNoContent)
 		return
@@ -91,25 +91,25 @@ func RolePATCH(c *gin.Context) {
 		return
 	}
 
-	result = initialize.DB.Model(&role).Omit("ID").Updates(&body)
+	result = initialize.DB.Model(&user).Omit("ID").Updates(&body)
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"Role": role,
+		"User": user,
 	})
 }
 
-func RoleDELETE(c *gin.Context) {
+func UserDELETE(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.Status(http.StatusBadRequest)
 		return
 	}
 
-	result := initialize.DB.Delete(&models.Role{}, id)
+	result := initialize.DB.Delete(&models.User{}, id)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		c.Status(http.StatusNoContent)
 		return
