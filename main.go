@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/edelwei88/fixed-interest-go/controllers"
 	"github.com/edelwei88/fixed-interest-go/initialize"
+	"github.com/edelwei88/fixed-interest-go/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
@@ -67,7 +68,7 @@ func main() {
 
 	// Users
 	{
-		users := router.Group("/users")
+		users := router.Group("/users", middlewares.BearerTokenAuth())
 		users.GET("/", controllers.UsersGET)
 		users.GET("/:id", controllers.UserGET)
 		users.POST("/", controllers.UserPOST)
@@ -75,14 +76,13 @@ func main() {
 		users.DELETE("/:id", controllers.UserDELETE)
 	}
 
-	// admin := router.Group("/admin", gin.BasicAuth(gin.Accounts{
-	// os.Getenv("ADMIN_USERNAME"): os.Getenv("ADMIN_PASSWORD"),
-	// }))
-	// admin.GET("/test", func(c *gin.Context) {
-	// 	c.JSON(http.StatusOK, gin.H{
-	// 		"rofl": "rofl",
-	// 	})
-	// })
+	// Authorization
+	{
+		auth := router.Group("/auth")
+		auth.POST("/login", controllers.LoginPOST)
+		auth.POST("/register", controllers.RegisterPOST)
+		auth.POST("/check_bearer_token", controllers.CheckBearerTokenPOST)
+	}
 
 	router.Run()
 }
