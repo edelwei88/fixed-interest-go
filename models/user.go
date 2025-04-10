@@ -10,5 +10,5 @@ type User struct {
 	RoleID       uint   `gorm:"not null"`
 	Role         Role
 	Loans        []Loan
-	Tokens       []Token `json:"-"`
+	Tokens       []Token `json:"-" gorm:"constraint:OnDelete:CASCADE"`
 }

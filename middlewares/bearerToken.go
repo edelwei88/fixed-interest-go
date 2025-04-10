@@ -54,6 +54,7 @@ func BearerTokenAuth() gin.HandlerFunc {
 		}
 
 		c.Set("user_role", user.Role.Role)
+		c.Set("bearerToken", reqToken)
 
 		c.Next()
 	}

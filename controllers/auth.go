@@ -125,20 +125,16 @@ func RegisterPOST(c *gin.Context) {
 	})
 }
 
-func CheckBearerTokenPOST(c *gin.Context) {
-	var token struct {
-		Token string `binding:"required"`
-	}
-
-	err := c.ShouldBind(&token)
-	if err != nil {
-		c.Status(http.StatusBadRequest)
+func CheckBearerTokenGET(c *gin.Context) {
+	tokenStr, exists := c.Get("bearerToken")
+	if !exists {
+		c.Status(http.StatusUnauthorized)
 		return
 	}
 
 	var existingToken models.Token
 
-	result := initialize.DB.Where(&models.Token{Token: token.Token}).First(&existingToken)
+	result := initialize.DB.Where(&models.Token{Token: tokenStr.(string)}).First(&existingToken)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		c.Status(http.StatusUnauthorized)
 		return

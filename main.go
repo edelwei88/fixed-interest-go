@@ -68,7 +68,7 @@ func main() {
 
 	// Users
 	{
-		users := router.Group("/users", middlewares.BearerTokenAuth())
+		users := router.Group("/users")
 		users.GET("/", controllers.UsersGET)
 		users.GET("/:id", controllers.UserGET)
 		users.POST("/", controllers.UserPOST)
@@ -81,7 +81,12 @@ func main() {
 		auth := router.Group("/auth")
 		auth.POST("/login", controllers.LoginPOST)
 		auth.POST("/register", controllers.RegisterPOST)
-		auth.POST("/check_bearer_token", controllers.CheckBearerTokenPOST)
+	}
+
+	// User
+	{
+		data := router.Group("/data", middlewares.BearerTokenAuth())
+		data.GET("/current_user", controllers.CheckBearerTokenGET)
 	}
 
 	router.Run()
