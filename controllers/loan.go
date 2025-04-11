@@ -13,7 +13,7 @@ import (
 
 func LoansGET(c *gin.Context) {
 	var loans []models.Loan
-	result := initialize.DB.Find(&loans)
+	result := initialize.DB.Preload("LoanPayments").Preload("LoanType").Find(&loans)
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)
 		return

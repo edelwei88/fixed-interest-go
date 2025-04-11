@@ -150,11 +150,18 @@ func CheckBearerTokenGET(c *gin.Context) {
 	}
 
 	var user models.User
-	result = initialize.DB.Where(&models.User{ID: existingToken.UserID}).First(&user)
+	result = initialize.DB.Where(&models.User{ID: existingToken.UserID}).Preload("Role").First(&user)
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)
 		return
 	}
+
+	var loan models.Loan
+	var loans []models.Loan
+	loan.UserID = user.ID
+	initialize.DB.Where(&loan).Preload("LoanType").Preload("LoanPayments").Find(&loans)
+
+	user.Loans = loans
 
 	c.JSON(http.StatusOK, gin.H{
 		"User":  user,

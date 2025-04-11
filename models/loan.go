@@ -14,6 +14,6 @@ type Loan struct {
 	Payday       uint            `gorm:"not null;check:payday < 32"`
 	LoanTypeID   uint            `gorm:"not null"`
 	LoanType     LoanType
-	UserID       uint `gorm:"not null"`
-	LoanPayments []LoanPayment
+	UserID       uint          `gorm:"not null"`
+	LoanPayments []LoanPayment `gorm:"constraint:OnDelete:CASCADE"`
 }

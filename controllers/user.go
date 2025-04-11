@@ -13,7 +13,7 @@ import (
 
 func UsersGET(c *gin.Context) {
 	var users []models.User
-	result := initialize.DB.Find(&users)
+	result := initialize.DB.Preload("Role").Preload("Loans").Find(&users)
 	if result.Error != nil {
 		c.Status(http.StatusInternalServerError)
 		return

@@ -87,6 +87,7 @@ func main() {
 	{
 		data := router.Group("/data", middlewares.BearerTokenAuth())
 		data.GET("/current_user", controllers.CheckBearerTokenGET)
+		data.POST("/add_loan", controllers.AddLoanPOST)
 	}
 
 	router.Run()

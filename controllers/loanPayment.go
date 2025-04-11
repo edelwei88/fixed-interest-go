@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/edelwei88/fixed-interest-go/initialize"
 	"github.com/edelwei88/fixed-interest-go/models"
@@ -49,6 +50,7 @@ func LoanPaymentGET(c *gin.Context) {
 
 func LoanPaymentPOST(c *gin.Context) {
 	var body models.LoanPayment
+	body.Time = time.Now()
 	err := c.ShouldBind(&body)
 	if err != nil {
 		c.Status(http.StatusBadRequest)
